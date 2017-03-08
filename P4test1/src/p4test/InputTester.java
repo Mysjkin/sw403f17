@@ -1,56 +1,53 @@
 package p4test;
 import java.io.*;
+import java.nio.charset.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class InputTester {
+	
+
     public static void main(String args[])
     {
-
+    	
+    	String currentFile;
+    	Scanner scanner;
+    	
     	try {
-			FileInputStream fstream = new FileInputStream(System.getProperty("user.dir") + "/src/p4test/TestPrograms/Test1.txt");
-			
-			 DataInputStream in = new DataInputStream(fstream);
-			  BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			  String strLine;
-			  //Read File Line By Line
-			  while ((strLine = br.readLine()) != null)   {
-			  // Print the content on the console
-			  System.out.println (strLine);
-			  }
-			  //Close the input stream
-			  in.close();
+    		File folder = new File(System.getProperty("user.dir") + "/src/p4test/TestPrograms/");
+    		File[] listOfFiles = folder.listFiles();
+
+    		for (File file : listOfFiles) {
+    		    if (file.isFile()) {
+    		        currentFile = "";
+    		    	currentFile = readFile(System.getProperty("user.dir") + "/src/p4test/TestPrograms/" + file.getName());
+    		    	scanner = new Scanner(currentFile);
+    		        try
+    		        {
+    		            long i = currentFile.length();
+    		            while(scanner.index < scanner.inputLen)
+    		                System.out.println(scanner.nextToken());
+    		            ParserIaro parserIaro = new ParserIaro(scanner);
+    		            parserIaro.Run();
+    		            
+    		        }
+    		        catch (Exception e)
+    		        {
+    		            System.out.println("Mistakes were made: " + e);
+    		        }
+    		    }
+    		}
 			  
 		} catch (Exception e){//Catch exception if any
-			  System.err.println("Error: " + e.getMessage());
+			  System.out.println("Error: " + e.getMessage());
 		}
-	
-    	
-   /* 	
-        String input = 
-                "void FirstMission (string person, number speed) " +
-                    "number target is speed " +
-                    "until(true) " +
-                        "string turn is target " +
-                    "end until " +
-                "end FirstMission ";
-*/
-        //ParserMikkel bla = new ParserMikkel(new Scanner(input));
-        //bla.Parse();
-
-        /*
-        // Run scanner on test string
-        Scanner scanner = new Scanner(input);
-        try
-        {
-            long i = input.chars().count();
-            //while(scanner.index < scanner.inputLen)
-                //System.out.println(scanner.nextToken());
-            ParserIaro parserIaro = new ParserIaro(scanner);
-            parserIaro.Run();
-        }
-        catch (Exception e)
-        {
-            System.out.println(e);
-        }
-        */
     }
+    
+    static String readFile(String path) 
+			  throws IOException 
+			{
+			  byte[] encoded = Files.readAllBytes(Paths.get(path));
+			  return new String(encoded, Charset.forName("ASCII") );
+			}
+	
 }
